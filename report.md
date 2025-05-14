@@ -136,6 +136,8 @@ This fees are fixed, meaning that we can incorporate them in our Ml or DL models
 
 - More complex DL techniques
 
+- Retrain or further train on new data during the time
+
 
 
 
