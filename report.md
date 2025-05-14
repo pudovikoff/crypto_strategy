@@ -69,7 +69,7 @@ Possible solution - use ML or DL techniques for the funding rate prediction.
 
 To solve this problem we tested two giants of the timeseries forecasting - [Prophet library](https://facebook.github.io/prophet/docs/quick_start.html#python-api) and [Long Short-Term Memory (LSTM) model](https://en.wikipedia.org/wiki/Long_short-term_memory)
 
-See 
+See [forecasting file](funding_rate_analysis/eth_funding_rate_sign_prediction_report.md).
 
 ## Overall method:
 
@@ -111,9 +111,22 @@ This strategy does not include fee or gas prices. Therefore this section will di
 
 The Hyperliquid DEX does not have any gas prices for the trading: "Trading on Hyperliquid does not cost gas" [link](https://hyperliquid.gitbook.io/hyperliquid-docs/onboarding/how-to-start-trading).
 
-On the other hand, there are fees for the total volume of weighted rolling trading for 14 days which depends on the total volume and the Staking tiers. [link](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees) This fees are fixed, meaning that we can incorporate them in our Ml or DL models.
+On the other hand, there are fees for the total volume of weighted rolling trading for 14 days which depends on the total volume and the Staking tiers. [link](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees).
 
 
+There will be different options for the algorithm:
+
+1. If the total fees $2 \cdot (\text{fee}) \cdot (\text{capital})$ of withdraw is bigger than expected win for the $N$ hours - stay at the previous strategy
+
+2. Elif the total fees $2 \cdot 2 \cdot (\text{fee}) \cdot (\text{capital})$ of withdraw and open the new position is lower than expected win for the $N$ hours - change the strategy for new sign of the funding rate
+
+3. Else - go out to cash
+
+Two times - because we will have to go back to the position.
+
+This fees are fixed, meaning that we can incorporate them in our Ml or DL models as we can work only with signs. So models will study not even the sign, but the equation - bigger or lower two and four times of certain fees.
+
+Of course, there is a limitation of the predicion - ML and DL models usually do not provide an uncertainty interval for their prediction and we focus only on the $N$ hour prediction not on the whole timeseries prediction, which is also possible. It might be a **growth** points.
  
 
 
