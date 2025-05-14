@@ -124,10 +124,18 @@ There will be different options for the algorithm:
 
 Two times - because we will have to go back to the position.
 
-This fees are fixed, meaning that we can incorporate them in our Ml or DL models as we can work only with signs. So models will study not even the sign, but the equation - bigger or lower two and four times of certain fees.
+This fees are fixed, meaning that we can incorporate them in our Ml or DL models as we can work only with signs. So models will study not even the sign, but the equation - bigger or lower two and four times of certain fees. Concluding that we have a *classification* problem on time series instead of regression.
 
-Of course, there is a limitation of the predicion - ML and DL models usually do not provide an uncertainty interval for their prediction and we focus only on the $N$ hour prediction not on the whole timeseries prediction, which is also possible. It might be a **growth** points.
+**Growth** points:
+
+- Of course, there is a limitation of the predicion - ML and DL models usually do not provide an uncertainty interval for their prediction
+
+- We focus only on the $N$ hour prediction not on the whole timeseries prediction, which is also possible. 
  
+- This solution interacts with the funding rate, whereas it is a function and has a [formula](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding). So, it is possible to predict them and next use this formula.
+
+- More complex DL techniques
+
 
 
 
