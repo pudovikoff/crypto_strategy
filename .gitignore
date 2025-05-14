@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.cursor
+data/
+images/
+fractal_data/
+mlruns/
+.vscode/
+.env
+.DS_Store
