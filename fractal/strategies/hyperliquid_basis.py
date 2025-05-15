@@ -15,7 +15,7 @@ class HyperliquidBasis(BasisTradingStrategy):
         self.register_entity(
             NamedEntity(entity_name='HEDGE', entity=HyperliquidEntity(
                 trading_fee=self._params.EXECUTION_COST,
-                max_leverage=self.MAX_LEVERAGE,
+                max_leverage=self._params.MAX_LEVERAGE,
             )))
         self.register_entity(
             NamedEntity(entity_name='SPOT',
