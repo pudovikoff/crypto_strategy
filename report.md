@@ -139,6 +139,13 @@ This fees are fixed, meaning that we can incorporate them in our Ml or DL models
 - Retrain or further train on new data during the time
 
 
+# Data
 
+We have all neccessary data for perpetuals (Hyperliquid), spot (the graph Uniswap pool v3 data) and funding rate (Hyperliquid) with frequency 1 hour.
 
+# Experiment
+
+We need more to debug our solution, however we have created the core code for our tests and ready to merge all sections
+
+TBD
 
