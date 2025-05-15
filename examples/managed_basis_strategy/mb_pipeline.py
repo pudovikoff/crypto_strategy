@@ -32,27 +32,27 @@ def build_grid():
 
 if __name__ == '__main__':
     ticker: str = 'BTC'
-    start_time = datetime(2022, 1, 1, tzinfo=UTC)
+    start_time = datetime(2024, 1, 1, tzinfo=UTC)
     end_time = datetime(2025, 1, 1, tzinfo=UTC)
     fidelity = '1h'
     experiment_name = f'mb_binance_{fidelity}_{ticker}_{start_time.strftime("%Y-%m-%d")}_{end_time.strftime("%Y-%m-%d")}'
 
     # Define MLFlow and Experiment configurations
-    mlflow_uri = os.getenv('MLFLOW_URI')
-    aws_key = os.getenv('AWS_ACCESS_KEY_ID')
-    aws_secret = os.getenv('AWS_SECRET_ACCESS_KEY')
+    mlflow_uri = 'http://127.0.0.1:8080'
+    #aws_key = os.getenv('AWS_ACCESS_KEY_ID')
+    #aws_secret = os.getenv('AWS_SECRET_ACCESS_KEY')
 
     if not mlflow_uri:
         raise ValueError("MLFLOW_URI isn't set.")
 
-    if not aws_key or not aws_secret:
-        warnings.warn("AWS_ACCESS_KEY_ID или AWS_SECRET_ACCESS_KEY are not set", RuntimeWarning)
+    #if not aws_key or not aws_secret:
+    #    warnings.warn("AWS_ACCESS_KEY_ID или AWS_SECRET_ACCESS_KEY are not set", RuntimeWarning)
 
     mlflow_config: MLFlowConfig = MLFlowConfig(
         mlflow_uri=mlflow_uri,
         experiment_name=experiment_name,
-        aws_access_key_id=aws_key,
-        aws_secret_access_key=aws_secret,
+        #aws_access_key_id=aws_key,
+        #aws_secret_access_key=aws_secret,
     )
 
     observations = build_observations(ticker, start_time, end_time, fidelity=fidelity)
