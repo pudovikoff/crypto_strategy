@@ -147,5 +147,7 @@ We have all neccessary data for perpetuals (Hyperliquid), spot (the graph Uniswa
 
 We need more to debug our solution, however we have created the core code for our tests and ready to merge all sections
 
+Strategy modification - we redetermine the predict 
+
 TBD
 
