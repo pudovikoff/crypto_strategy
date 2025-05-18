@@ -21,71 +21,20 @@ warnings.filterwarnings('ignore')
 class MLPredictor:
     def __init__(self, lookback_window: int = 24):
         self.lookback_window = lookback_window
-        self.model = RandomForestRegressor(n_estimators=100, random_state=42)
-        self.scaler = StandardScaler()
+        # No need for a model or scaler in our stub
         
     def prepare_features(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Prepare features for ML model"""
-        df = data.copy()
-        print(df)
-        # Validate that required columns exist
-        required_columns = ['funding_rate', 'price']
-        for col in required_columns:
-            if col not in df.columns:
-                print(f"Warning: Column '{col}' not found in dataframe. Available columns: {df.columns.tolist()}")
-                return pd.DataFrame()  # Return empty dataframe if required columns are missing
-        
-        # Create lagged features
-        for i in range(1, self.lookback_window + 1):
-            df[f'funding_rate_lag_{i}'] = df['funding_rate'].shift(i)
-            df[f'price_lag_{i}'] = df['price'].shift(i)
-        
-        # Create rolling statistics
-        df['funding_rate_mean'] = df['funding_rate'].rolling(window=self.lookback_window).mean()
-        df['funding_rate_std'] = df['funding_rate'].rolling(window=self.lookback_window).std()
-        df['price_mean'] = df['price'].rolling(window=self.lookback_window).mean()
-        df['price_std'] = df['price'].rolling(window=self.lookback_window).std()
-        
-        # Drop NaN values
-        df = df.dropna()
-        return df
+        """Stub implementation - just returns the input data"""
+        return data
     
     def fit(self, data: pd.DataFrame):
-        """Fit the model"""
-        df = self.prepare_features(data)
-        if len(df) == 0:
-            print("Warning: No data available after preparing features. Model not fitted.")
-            return
-            
-        # Prepare features and target
-        feature_cols = [col for col in df.columns if col not in ['timestamp', 'funding_rate']]
-        X = df[feature_cols]
-        y = df['funding_rate']
-        
-        # Scale features
-        X_scaled = self.scaler.fit_transform(X)
-        
-        # Fit model
-        self.model.fit(X_scaled, y)
+        """Stub implementation - does nothing"""
+        print("Stub predictor: fit called (does nothing)")
+        pass
         
     def predict(self, data: pd.DataFrame) -> float:
-        """Make prediction for next funding rate"""
-        df = self.prepare_features(data)
-        if len(df) == 0:
-            return 0.0
-            
-        # Get latest data point
-        latest = df.iloc[-1:]
-        
-        # Prepare features
-        feature_cols = [col for col in latest.columns if col not in ['timestamp', 'funding_rate']]
-        X = latest[feature_cols]
-        
-        # Scale features
-        X_scaled = self.scaler.transform(X)
-        
-        # Make prediction
-        return self.model.predict(X_scaled)[0]
+        """Stub implementation - randomly returns 0, 1, or 2"""
+        return float(np.random.choice([0, 1, 2]))
         
     def __call__(self, data: pd.DataFrame) -> float:
         """Make the predictor callable directly"""

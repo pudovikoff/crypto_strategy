@@ -5,8 +5,9 @@ from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 
-from fractal.core.base import Observation
+from fractal.core.base import Observation, Action, ActionToTake
 from fractal.core.entities import UniswapV3LPGlobalState, HyperLiquidGlobalState
+from fractal.core.entities import BaseHedgeEntity, BaseSpotEntity
 from fractal.strategies.hyperliquid_basis import HyperliquidBasis
 from fractal.strategies.basis_trading_strategy import BasisTradingStrategyHyperparams
 
@@ -77,23 +78,24 @@ class MLBasisStrategy(HyperliquidBasis):
         historical_data = self._get_historical_data(current_observation)
         predicted_funding_rate = self.ml_predictor(historical_data)
         
-        # If predicted funding rate is negative, exit position
-        if predicted_funding_rate <= self.params['ML_PREDICTION_THRESHOLD']:
-            return self._exit_position()
-            
-        # Initial deposit if both balances are 0 and we predict positive funding rate
-        if hedge.balance == 0 and spot.balance == 0 and predicted_funding_rate > self.params['ML_PREDICTION_THRESHOLD']:
-            self._debug("Depositing initial funds into the strategy...")
-            return self._deposit_into_strategy()
-            
-        # Rebalance if needed
-        if hedge.balance == 0 and spot.balance > 0:
-            self._debug(f"HEDGE balance is 0, but SPOT balance is {spot.balance}")
-            return self._rebalance()
-        if hedge.leverage > self.params['MAX_LEVERAGE'] or hedge.leverage < self.params['MIN_LEVERAGE']:
-            self._debug(f"HEDGE leverage is {hedge.leverage}, rebalancing...")
-            return self._rebalance()
-            
+        if predicted_funding_rate > self.params['ML_PREDICTION_THRESHOLD']:
+            # Initial deposit if both balances are 0 and we predict positive funding rate
+            if hedge.balance == 0 and spot.balance == 0:
+                self._debug("Depositing initial funds into the strategy...")
+                return self._deposit_into_strategy()
+            # Rebalance if needed
+            if hedge.balance == 0 and spot.balance > 0:
+                self._debug(f"HEDGE balance is 0, but SPOT balance is {spot.balance}")
+                return self._rebalance()
+            if spot.balance > 0 and hedge.leverage > self.params['MAX_LEVERAGE'] or hedge.leverage < self.params['MIN_LEVERAGE']:
+                self._debug(f"HEDGE leverage is {hedge.leverage}, rebalancing...")
+                # spot_amount = spot.internal_state.amount
+                # assert np.abs(hedge.size + spot_amount) / np.abs(hedge.size - spot_amount) <= 1e-6  # hedge.size ~= -spot_amount
+                return self._rebalance()
+        else:
+            #If predicted funding rate is negative, exit position
+            if spot.balance != 0:
+                return self._exit_position()
         return []
 
     def _exit_position(self):
@@ -109,28 +111,21 @@ class MLBasisStrategy(HyperliquidBasis):
         
         actions = []
         
-        # Sell spot position
+        # Сначала закрываем хеджирующую позицию
+        if hedge_balance > 0 and hedge.size != 0:
+            actions.append(ActionToTake(entity_name='HEDGE', action=Action('open_position', {'amount_in_product': -hedge.size})))
+        
+        # Затем закрываем спотовую позицию
         if spot_balance > 0:
-            actions.extend([
-                ActionToTake(
-                    entity_name='SPOT',
-                    action=Action('sell', {'amount_in_product': spot.internal_state.amount})
-                ),
-                ActionToTake(
-                    entity_name='SPOT',
-                    action=Action('withdraw', {'amount_in_notional': spot_balance})
-                )
-            ])
-            
-        # Withdraw from hedge
+            actions.append(ActionToTake(entity_name='SPOT', action=Action('sell', {'amount_in_product': spot.internal_state.amount})))
+        
+        # Выводим средства после закрытия всех позиций
+        if spot_balance > 0:
+            actions.append(ActionToTake(entity_name='SPOT', action=Action('withdraw', {'amount_in_notional': lambda obj: obj.get_entity('SPOT').internal_state.cash})))
+        
         if hedge_balance > 0:
-            actions.append(
-                ActionToTake(
-                    entity_name='HEDGE',
-                    action=Action('withdraw', {'amount_in_notional': hedge_balance})
-                )
-            )
-            
+            actions.append(ActionToTake(entity_name='HEDGE', action=Action('withdraw', {'amount_in_notional': lambda obj: obj.get_entity('HEDGE').internal_state.collateral})))
+        
         return actions
 
 # Example usage:
