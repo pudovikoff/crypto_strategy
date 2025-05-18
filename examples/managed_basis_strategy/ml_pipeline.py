@@ -58,9 +58,9 @@ def build_grid(observations):
         ml_predictors[lookback] = predictor
     
     raw_grid = ParameterGrid({
-        'MIN_LEVERAGE': np.arange(1, 12, 1).tolist(),
-        'TARGET_LEVERAGE': np.arange(1, 12, 1).tolist(),
-        'MAX_LEVERAGE': np.arange(1, 12, 1).tolist(),
+        'MIN_LEVERAGE': np.arange(1, 12, 4).tolist(),
+        'TARGET_LEVERAGE': np.arange(1, 12, 4).tolist(),
+        'MAX_LEVERAGE': np.arange(1, 12, 4).tolist(),
         'EXECUTION_COST': [0.002],
         'INITIAL_BALANCE': [1_000_000],
         'ML_PREDICTION_THRESHOLD': [-0.0001, 0.0, 0.0001],  # Different thresholds for ML predictions
