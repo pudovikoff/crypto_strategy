@@ -1,1 +1,7 @@
-See [report.md](report.md) for more details
+This project implemets basis trading between perpetuals and spot in the WEB3.
+
+The whole impementation is based on the fractal library.
+
+The main is result is a [report.md](report.md) which contains a lot of useful results according to this strategy. 
+
+Support further research in ETH: ```0x63B52eff9FBCF7e32E27980e5E9E0B97f9637310``` 
