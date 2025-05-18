@@ -58,6 +58,7 @@ def build_observations(
     """
     Build observations for the ManagedBasisStrategy from the given start and end time.
     """
+    HyperliquidBasis.MAX_LEVERAGE = 45
     rate_data: RateHistory = HyperliquidFundingRatesLoader(
         ticker, start_time=start_time, end_time=end_time).read(with_run=False)
     if fidelity == '1d':
@@ -65,7 +66,7 @@ def build_observations(
     # use binance perp price because hyperliquid has limitations for klines limit
     prices: PriceHistory = BinancePriceLoader(
         ticker+'USDT', interval=fidelity, loader_type=LoaderType.CSV,
-        start_time=start_time, end_time=end_time).read(with_run=False)
+        start_time=start_time, end_time=end_time).read(with_run=True)
     return get_observations(rate_data, prices, start_time, end_time)
 
 
