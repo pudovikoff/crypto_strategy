@@ -1,0 +1,15 @@
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.2
+matplotlib==3.9.2
+seaborn==0.13.2
+plotly==5.24.1
+scipy==1.14.0
+optuna==4.0.0
+prophet==1.1.6
+shap==0.42.1
+tqdm==4.66.5
+pytest==8.3.3
+black==24.8.0
+flake8==7.2.0 
+fractal @ git+https://github.com/Logarithm-Labs/fractal-defi.git

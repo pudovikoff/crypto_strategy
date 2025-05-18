@@ -66,7 +66,7 @@ def build_observations(
     # use binance perp price because hyperliquid has limitations for klines limit
     prices: PriceHistory = BinancePriceLoader(
         ticker+'USDT', interval=fidelity, loader_type=LoaderType.CSV,
-        start_time=start_time, end_time=end_time).read(with_run=True)
+        start_time=start_time, end_time=end_time).read(with_run=False)
     return get_observations(rate_data, prices, start_time, end_time)
 
 

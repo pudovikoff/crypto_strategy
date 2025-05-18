@@ -76,6 +76,7 @@ class MLBasisStrategy(HyperliquidBasis):
         current_observation = kwargs.get('observation')
             
         historical_data = self._get_historical_data(current_observation)
+        # print(historical_data)
         predicted_funding_rate = self.ml_predictor(historical_data)
         
         if predicted_funding_rate > self.params['ML_PREDICTION_THRESHOLD']:

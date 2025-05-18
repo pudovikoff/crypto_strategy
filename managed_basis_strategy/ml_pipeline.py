@@ -1,4 +1,5 @@
 import os
+import sys
 import warnings
 from typing import Dict, Any
 
@@ -15,13 +16,41 @@ from fractal.core.pipeline import (
 from ml_basis_strategy import MLBasisStrategy, MLBasisParams
 from mb_hl_strategy import build_observations
 
+from funding_rate_analysis.eth_funding_rate_sign_prediction import LSTMModel
+import torch
+
 warnings.filterwarnings('ignore')
 
 
 class MLPredictor:
     def __init__(self, lookback_window: int = 24):
         self.lookback_window = lookback_window
-        # No need for a model or scaler in our stub
+        # Initialize LSTM model for ML predictions
+
+        # Load the fixed model weights
+        project_root = os.path.abspath(os.path.join(os.path.dirname('__file__'), '..'))
+        if project_root not in sys.path:
+            sys.path.append(project_root)
+
+        model_path = '/Users/adpudovnikov/Documents/Study/Crypto/crypto_strategy/model_weights/model_weights_24hr_20250518_235840.pth'
+        
+        if os.path.exists(model_path):
+            # Initialize model with same architecture as in eth_funding_rate_sign_prediction.py
+            input_size = 12  # Number of features used in original LSTM model
+            hidden_size = 96
+            num_layers = 3
+            dropout = 0.3
+            
+            self.lstm_model = LSTMModel(input_size, hidden_size, num_layers, dropout)
+            
+            # Load the saved weights    
+            self.lstm_model.load_state_dict(torch.load(model_path))
+            self.lstm_model.eval()  # Set to evaluation mode
+            
+            print(f"Loaded LSTM model weights from {model_path}")
+        else:
+            print("No LSTM model weights found. Using stub predictor.")
+            self.lstm_model = None
         
     def prepare_features(self, data: pd.DataFrame) -> pd.DataFrame:
         """Stub implementation - just returns the input data"""
@@ -34,10 +63,12 @@ class MLPredictor:
         
     def predict(self, data: pd.DataFrame) -> float:
         """Stub implementation - randomly returns 0, 1, or 2"""
+        # print(data)
         return float(np.random.choice([0, 1, 2]))
         
     def __call__(self, data: pd.DataFrame) -> float:
         """Make the predictor callable directly"""
+        # print("I AM CALLED")
         return self.predict(data)
 
 
@@ -52,19 +83,19 @@ def build_grid(observations):
 
     # Create ML predictors with different lookback windows
     ml_predictors = {}
-    for lookback in [12, 24, 48]:
+    for lookback in [ 24,]:
         predictor = MLPredictor(lookback_window=lookback)
-        predictor.fit(historical_data)
+        # predictor.fit(historical_data)
         ml_predictors[lookback] = predictor
     
     raw_grid = ParameterGrid({
-        'MIN_LEVERAGE': np.arange(1, 12, 4).tolist(),
-        'TARGET_LEVERAGE': np.arange(1, 12, 4).tolist(),
-        'MAX_LEVERAGE': np.arange(1, 12, 4).tolist(),
+        'MIN_LEVERAGE': np.arange(1, 12, 2).tolist(),
+        'TARGET_LEVERAGE': np.arange(1, 12, 2).tolist(),
+        'MAX_LEVERAGE': np.arange(1, 12, 2).tolist(),
         'EXECUTION_COST': [0.002],
         'INITIAL_BALANCE': [1_000_000],
         'ML_PREDICTION_THRESHOLD': [-0.0001, 0.0, 0.0001],  # Different thresholds for ML predictions
-        'LOOKBACK_WINDOW': [12, 24, 48],  # Different lookback windows for ML model
+        'LOOKBACK_WINDOW': [ 24,],  # Different lookback windows for ML model
     })
 
     # Create the full grid with appropriate ML predictors
