@@ -99,6 +99,8 @@ if __name__ == '__main__':
         experiment_name=experiment_name,
     )
 
+    # HyperliquidBasis.MAX_LEVERAGE = 45
+
     # Build observations
     observations = build_observations(ticker, start_time, end_time, fidelity=fidelity)
     assert len(observations) > 0
