@@ -12,4 +12,4 @@ mlruns/
 .vscode/
 .env
 .DS_Store
-.pth
+.pth.pyc
