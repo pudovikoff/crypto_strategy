@@ -111,18 +111,17 @@ class MLBasisStrategy(HyperliquidBasis):
         
         actions = []
         
-        # Сначала закрываем хеджирующую позицию
+        # First, close the hedging position
         if hedge_balance > 0 and hedge.size != 0:
             actions.append(ActionToTake(entity_name='HEDGE', action=Action('open_position', {'amount_in_product': -hedge.size})))
         
-        # Затем закрываем спотовую позицию
+        # Then close the spot position
         if spot_balance > 0:
             actions.append(ActionToTake(entity_name='SPOT', action=Action('sell', {'amount_in_product': spot.internal_state.amount})))
         
-        # Выводим средства после закрытия всех позиций
+        # Withdraw funds after closing all positions
         if spot_balance > 0:
             actions.append(ActionToTake(entity_name='SPOT', action=Action('withdraw', {'amount_in_notional': lambda obj: obj.get_entity('SPOT').internal_state.cash})))
-        
         if hedge_balance > 0:
             actions.append(ActionToTake(entity_name='HEDGE', action=Action('withdraw', {'amount_in_notional': lambda obj: obj.get_entity('HEDGE').internal_state.collateral})))
         
