@@ -320,7 +320,7 @@ def lstm_sign_model(train_data, test_data, window=1, seq_length=24, epochs=50):
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)  # Added weight decay
     
     # Learning rate scheduler
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5, verbose=True)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
     
     # Train the model
     best_val_loss = float('inf')
@@ -353,6 +353,18 @@ def lstm_sign_model(train_data, test_data, window=1, seq_length=24, epochs=50):
             predicted = (outputs.numpy() > 0.5).astype(int)
             all_preds.extend(predicted.flatten().tolist())
             all_targets.extend(batch_y.numpy().flatten().tolist())
+
+    # Save the trained model with a timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    model_filename = f"model_weights_{window}hr_{timestamp}.pth"
+    model_save_path = os.path.join('model_weights', model_filename)
+    
+    # Create model_weights directory if it doesn't exist
+    os.makedirs('model_weights', exist_ok=True)
+    
+    # Save model weights
+    torch.save(model.state_dict(), model_save_path)
+    print(f"Model weights saved to {model_save_path}")
     
     # Calculate evaluation metrics
     accuracy = accuracy_score(all_targets, all_preds)
