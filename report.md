@@ -142,12 +142,17 @@ This fees are fixed, meaning that we can incorporate them in our Ml or DL models
 # Data
 
 We have all neccessary data for perpetuals (Hyperliquid), spot (the graph Uniswap pool v3 data) and funding rate (Hyperliquid) with frequency 1 hour.
+The experiments are conducted on the priod of 01.01.2023 to 05.05.2025
 
 # Experiment
 
-We need more to debug our solution, however we have created the core code for our tests and ready to merge all sections
+The strategy was ran on the grid search and shown the best APY equal to 16%
 
-Strategy modification - we redetermine the predict 
+The comparasion table of the best results:
 
-TBD
+|        APY              | Max_drawdown                 | Max Leverage | Min Leverage | Target Leverage | 
+|-------------------------|------------------------------|--------------|--------------|----------------|
+| **0.1641532**            | -0.0117                      | 41.115       | 11           | 3              | 
+| 0.1615209              | -0.0111                      | 41.509       | 11           | 3              | 
+| 0.1605821              | -0.0086                      | 45.277       | 11           | 1              |
 
