@@ -46,9 +46,13 @@ Possible solution - close position or even, open new positions to farm funding r
 
 Is it a good idea? Dive into the statistics of the funding rate for ETH on the Hyperliquid!
 
-See more in the corresponding [file](funding_rate_analysis/eth_funding_rates_analysis.md).
+See more in the corresponding [subreport](funding_rate_analysis/eth_funding_rates_analysis.md).
 
-This report will examine funding rates from January 1, 2025, to May 13, 2025.
+
+This study examines the ETH, because other tokens have worther statistics in the negative funding rates. See more in the correspoing [ipynb](managed_basis_strategy/Funding_rate_analyze.ipynb).
+
+
+This report will examine funding rates from January 1, 2025, to May 13, 2025. 
 
 ![ETH Funding Rates Moving Averages](images/start/eth_funding_rates_ma.png)
 
